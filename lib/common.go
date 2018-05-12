@@ -3,7 +3,7 @@ package lib
 import "time"
 
 type Task struct {
-	Board Board
+	Board *Board
 	IssueId string
 	Title string
 	Description string
@@ -49,8 +49,8 @@ func NewEmptyIssue() *Issue {
 }
 
 type KanbanApiClient interface {
-	CreateIssue(boardId string, draft Issue) (Issue, error)
-	UpdateIssue(boardId string, toBeUpdated Issue) error
-	ReadIssue(boardId string, issueId string) (Issue, error)
-	QueryIssue(boardId string, condition StateCondDef) ([]Issue, error)
+	CreateIssue(boardId string, draft *Issue) (*Issue, error)
+	UpdateIssue(boardId string, toBeUpdated *Issue) error
+	ReadIssue(boardId string, issueId string) (*Issue, error)
+	QueryIssue(boardId string, condition StateCondDef) ([]*Issue, error)
 }

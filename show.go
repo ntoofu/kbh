@@ -29,10 +29,10 @@ func showTask(args []string, conf lib.GlobalConfig, stdout io.Writer) error {
 		return err
 	}
 
-	taskList := make([]lib.Task, 0)
+	taskList := make([]*lib.Task, 0)
 	for _, bd := range boardList {
 		dupCounter := make(map[string]struct{})
-		issues := make([]lib.Issue, 0)
+		issues := make([]*lib.Issue, 0)
 		for _, cond := range bd.StateMapping {
 			partialIssues, err := bd.Client.QueryIssue(bd.Name, cond.Condition)
 			if err != nil {
@@ -62,7 +62,7 @@ func showTask(args []string, conf lib.GlobalConfig, stdout io.Writer) error {
 	return nil
 }
 
-func getBoardList(endpointDef []lib.EndpointDef, boardDef []lib.BoardDef) ([]lib.Board, error) {
+func getBoardList(endpointDef []lib.EndpointDef, boardDef []lib.BoardDef) ([]*lib.Board, error) {
 	apiClientList := map[string]lib.KanbanApiClient{}
 	for _, endpoint := range endpointDef {
 		var apiClient lib.KanbanApiClient
@@ -75,11 +75,11 @@ func getBoardList(endpointDef []lib.EndpointDef, boardDef []lib.BoardDef) ([]lib
 		apiClientList[endpoint.Name] = apiClient
 	}
 
-	boardList := make([]lib.Board, 0)
+	boardList := make([]*lib.Board, 0)
 	for _, bd := range boardDef {
 		stateMapping := reorderStateConditions(bd.Mapping.State)
 		elem := lib.Board{bd.Name, bd.Alias, apiClientList[bd.Endpoint], stateMapping}
-		boardList = append(boardList, elem)
+		boardList = append(boardList, &elem)
 	}
 
 	return boardList, nil
@@ -94,7 +94,7 @@ func reorderStateConditions(orgConditions map[string]lib.StateCondDef) []lib.Sta
 	return conds
 }
 
-func issueToTask(bd lib.Board, issue lib.Issue) (lib.Task, bool) {
+func issueToTask(bd *lib.Board, issue *lib.Issue) (*lib.Task, bool) {
 	state := ""
 	for _, cond := range bd.StateMapping {
 		if cond.Condition.IsMatched(issue) {
@@ -103,7 +103,7 @@ func issueToTask(bd lib.Board, issue lib.Issue) (lib.Task, bool) {
 		}
 	}
 	if state == "" {
-		return lib.Task{}, false
+		return nil, false
 	}
-	return lib.Task{bd, issue.Id(), issue.Title, issue.Description, state}, true
+	return &lib.Task{bd, issue.Id(), issue.Title, issue.Description, state}, true
 }

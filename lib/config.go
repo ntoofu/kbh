@@ -40,7 +40,7 @@ type StateCondDef struct {
 	MaxDaysWOUpdate NullableUint `yaml:"max_days_without_update"`
 }
 
-func (x *StateCondDef) IsMatched(issue Issue) bool {
+func (x *StateCondDef) IsMatched(issue *Issue) bool {
 	if x.LabelName.Valid {
 		contained := false
 		for _, l := range issue.Label {

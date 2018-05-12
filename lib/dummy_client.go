@@ -5,7 +5,7 @@ import (
 	"time"
 )
 
-var DummyClientIssues map[string][]Issue
+var DummyClientIssues map[string][]*Issue
 var DummyClientIssueIdCounter map[string]uint
 
 type DummyClient struct {
@@ -13,14 +13,14 @@ type DummyClient struct {
 
 func initIssueListIfNecessary (clientId string) {
 	if _, good := DummyClientIssueIdCounter[clientId]; !good {
-		DummyClientIssues[clientId] = []Issue{}
+		DummyClientIssues[clientId] = []*Issue{}
 	}
 	if _, good := DummyClientIssueIdCounter[clientId]; !good {
 		DummyClientIssueIdCounter[clientId] = 0
 	}
 }
 
-func (c DummyClient) CreateIssue(boardId string, draft Issue) (Issue, error) {
+func (c DummyClient) CreateIssue(boardId string, draft *Issue) (*Issue, error) {
 	initIssueListIfNecessary(boardId)
 	issue := NewIssue(
 		fmt.Sprintf("id%d", DummyClientIssueIdCounter[boardId]),
@@ -31,12 +31,12 @@ func (c DummyClient) CreateIssue(boardId string, draft Issue) (Issue, error) {
 		draft.Label,
 		draft.IsClosed,
 		time.Now())
-	DummyClientIssues[boardId] = append(DummyClientIssues[boardId], *issue)
+	DummyClientIssues[boardId] = append(DummyClientIssues[boardId], issue)
 	DummyClientIssueIdCounter[boardId]++
-	return *issue, nil
+	return issue, nil
 }
 
-func (c DummyClient) UpdateIssue(boardId string, toBeUpdated Issue) error {
+func (c DummyClient) UpdateIssue(boardId string, toBeUpdated *Issue) error {
 	initIssueListIfNecessary(boardId)
 	for i, issue := range DummyClientIssues[boardId] {
 		if issue.Id() == toBeUpdated.Id() {
@@ -47,18 +47,18 @@ func (c DummyClient) UpdateIssue(boardId string, toBeUpdated Issue) error {
 	return fmt.Errorf("No corresponding issue has found")
 }
 
-func (c DummyClient) ReadIssue(boardId string, issueId string) (Issue, error) {
+func (c DummyClient) ReadIssue(boardId string, issueId string) (*Issue, error) {
 	initIssueListIfNecessary(boardId)
 	for _, issue := range DummyClientIssues[boardId] {
 		if issue.Id() == issueId {
 			return issue, nil
 		}
 	}
-	return Issue{}, fmt.Errorf("No corresponding issue has found")
+	return &Issue{}, fmt.Errorf("No corresponding issue has found")
 }
 
-func (c DummyClient) QueryIssue(boardId string, condition StateCondDef) ([]Issue, error) {
-	foundIssues := make([]Issue, 0)
+func (c DummyClient) QueryIssue(boardId string, condition StateCondDef) ([]*Issue, error) {
+	foundIssues := make([]*Issue, 0)
 	for _, issue := range DummyClientIssues[boardId] {
 		if ( (!condition.Asignee.Valid || issue.Asignee == condition.Asignee.Value) &&
 			 (!condition.LabelName.Valid || isInStrSlice(condition.LabelName.Value, issue.Label)) &&
