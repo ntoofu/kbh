@@ -125,7 +125,7 @@ func TestSubcommandCall(t *testing.T) {
 			mockSubcommandsFactory{
 				callHistory{false, nil},
 				callHistory{false, nil},
-				callHistory{true, nil},
+				callHistory{true, []string{}},
 			},
 		},
 	}
@@ -140,7 +140,7 @@ func TestSubcommandCall(t *testing.T) {
 			t.Errorf("An error has occured during running CLI")
 		}
 		if !reflect.DeepEqual(*mock, ae.Expect) {
-			t.Errorf("Calling history of subcommands is different from that expected (%v)", ae.Args)
+			t.Errorf("Calling history of subcommands is different from that expected (%v)\n--- expect ---\n%v\n--- actual ---\n%v\n", ae.Args, ae.Expect, *mock)
 		}
 	}
 }
