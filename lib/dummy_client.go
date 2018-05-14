@@ -20,10 +20,10 @@ func initIssueListIfNecessary (clientId string) {
 	}
 }
 
-func (c DummyClient) CreateIssue(boardId string, draft *Issue) (*Issue, error) {
-	initIssueListIfNecessary(boardId)
+func (c DummyClient) CreateIssue(board *Board, draft *Issue) (*Issue, error) {
+	initIssueListIfNecessary(board.Name)
 	issue := NewIssue(
-		fmt.Sprintf("id%d", DummyClientIssueIdCounter[boardId]),
+		fmt.Sprintf("id%d", DummyClientIssueIdCounter[board.Name]),
 		c,
 		draft.Title,
 		draft.Description,
@@ -31,25 +31,25 @@ func (c DummyClient) CreateIssue(boardId string, draft *Issue) (*Issue, error) {
 		draft.Label,
 		draft.IsClosed,
 		time.Now())
-	DummyClientIssues[boardId] = append(DummyClientIssues[boardId], issue)
-	DummyClientIssueIdCounter[boardId]++
+	DummyClientIssues[board.Name] = append(DummyClientIssues[board.Name], issue)
+	DummyClientIssueIdCounter[board.Name]++
 	return issue, nil
 }
 
-func (c DummyClient) UpdateIssue(boardId string, toBeUpdated *Issue) error {
-	initIssueListIfNecessary(boardId)
-	for i, issue := range DummyClientIssues[boardId] {
+func (c DummyClient) UpdateIssue(board *Board, toBeUpdated *Issue) error {
+	initIssueListIfNecessary(board.Name)
+	for i, issue := range DummyClientIssues[board.Name] {
 		if issue.Id() == toBeUpdated.Id() {
-			DummyClientIssues[boardId][i] = toBeUpdated
+			DummyClientIssues[board.Name][i] = toBeUpdated
 			return nil
 		}
 	}
 	return fmt.Errorf("No corresponding issue has found")
 }
 
-func (c DummyClient) ReadIssue(boardId string, issueId string) (*Issue, error) {
-	initIssueListIfNecessary(boardId)
-	for _, issue := range DummyClientIssues[boardId] {
+func (c DummyClient) ReadIssue(board *Board, issueId string) (*Issue, error) {
+	initIssueListIfNecessary(board.Name)
+	for _, issue := range DummyClientIssues[board.Name] {
 		if issue.Id() == issueId {
 			return issue, nil
 		}
@@ -57,9 +57,9 @@ func (c DummyClient) ReadIssue(boardId string, issueId string) (*Issue, error) {
 	return &Issue{}, fmt.Errorf("No corresponding issue has found")
 }
 
-func (c DummyClient) QueryIssue(boardId string, condition StateCondDef) ([]*Issue, error) {
+func (c DummyClient) QueryIssue(board *Board, condition StateCondDef) ([]*Issue, error) {
 	foundIssues := make([]*Issue, 0)
-	for _, issue := range DummyClientIssues[boardId] {
+	for _, issue := range DummyClientIssues[board.Name] {
 		if ( (!condition.Asignee.Valid || issue.Asignee == condition.Asignee.Value) &&
 			 (!condition.LabelName.Valid || isInStrSlice(condition.LabelName.Value, issue.Label)) &&
 			 (!condition.IsClosed.Valid || issue.IsClosed == condition.IsClosed.Value)) {

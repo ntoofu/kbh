@@ -34,7 +34,7 @@ func showTask(args []string, conf lib.GlobalConfig, stdout io.Writer) error {
 		dupCounter := make(map[string]struct{})
 		issues := make([]*lib.Issue, 0)
 		for _, cond := range bd.StateMapping {
-			partialIssues, err := bd.Client.QueryIssue(bd.Name, cond.Condition)
+			partialIssues, err := bd.Client.QueryIssue(bd, cond.Condition)
 			if err != nil {
 				return err
 			}

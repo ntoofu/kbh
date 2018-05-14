@@ -49,8 +49,8 @@ func NewEmptyIssue() *Issue {
 }
 
 type KanbanApiClient interface {
-	CreateIssue(boardId string, draft *Issue) (*Issue, error)
-	UpdateIssue(boardId string, toBeUpdated *Issue) error
-	ReadIssue(boardId string, issueId string) (*Issue, error)
-	QueryIssue(boardId string, condition StateCondDef) ([]*Issue, error)
+	CreateIssue(board *Board, draft *Issue) (*Issue, error)
+	UpdateIssue(board *Board, toBeUpdated *Issue) error
+	ReadIssue(board *Board, issueId string) (*Issue, error)
+	QueryIssue(board *Board, condition StateCondDef) ([]*Issue, error)
 }
