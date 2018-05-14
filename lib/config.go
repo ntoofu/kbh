@@ -65,11 +65,9 @@ func (x *StateCondDef) IsMatched(issue *Issue) bool {
 		}
 	}
 	if x.MaxDaysWOUpdate.Valid {
-		if x.MaxDaysWOUpdate.Valid {
-			maxHours := time.Duration(x.MaxDaysWOUpdate.Value) * 24 * time.Hour
-			if time.Now().After(issue.UpdateTime().Add(maxHours)) {
-				return false
-			}
+		maxHours := time.Duration(x.MaxDaysWOUpdate.Value) * 24 * time.Hour
+		if time.Now().After(issue.UpdateTime().Add(maxHours)) {
+			return false
 		}
 	}
 	return true
