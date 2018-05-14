@@ -68,7 +68,7 @@ func getBoardList(endpointDef []lib.EndpointDef, boardDef []lib.BoardDef) ([]*li
 		var apiClient lib.KanbanApiClient
 		switch endpoint.Type {
 		case "gitlab":
-			apiClient = lib.GitlabClient{endpoint.Url, endpoint.ApiVersion}
+			apiClient = lib.GitlabClient{endpoint.Url, endpoint.AuthToken}
 		case "dummy":
 			apiClient = lib.DummyClient{}
 		}

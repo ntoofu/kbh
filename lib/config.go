@@ -21,6 +21,7 @@ type EndpointDef struct {
 	Type string
 	Url string
 	ApiVersion string `yaml:"api_version"`
+	AuthToken string `yaml:"auth_token"`
 }
 
 type BoardDef struct {
