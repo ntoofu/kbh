@@ -29,29 +29,34 @@ func showTask(args []string, conf lib.GlobalConfig, stdout io.Writer) error {
 		return err
 	}
 
-	taskList := make([]*lib.Task, 0)
+	errorChan := make(chan error)
+	taskChan := make(chan *lib.Task)
 	for _, bd := range boardList {
-		dupCounter := make(map[string]struct{})
-		issues := make([]*lib.Issue, 0)
-		for _, cond := range bd.StateMapping {
-			partialIssues, err := bd.Client.QueryIssue(bd, cond.Condition)
+		go func(b *lib.Board, tch chan *lib.Task, ech chan error) {
+			issues, err := getTaskCandidates(b)
+			if err != nil {
+				ech <- err
+			}
+			for _, issue := range issues {
+				task, good := issueToTask(b, issue)
+				if good {
+					taskChan <- task
+				}
+			}
+			ech <- nil
+		}(bd, taskChan, errorChan)
+	}
+
+	taskList := make([]*lib.Task, 0)
+	for i := len(boardList); i>0; {
+		select {
+		case err := <-errorChan:
+			i--
 			if err != nil {
 				return err
 			}
-			for _, is := range partialIssues {
-				_, existence := dupCounter[is.Id()]
-				if !existence {
-					issues = append(issues, is)
-					dupCounter[is.Id()] = struct{}{}
-				}
-			}
-		}
-
-		for _, issue := range issues {
-			task, good := issueToTask(bd, issue)
-			if good {
-				taskList = append(taskList, task)
-			}
+		case task := <-taskChan:
+			taskList = append(taskList, task)
 		}
 	}
 
@@ -60,6 +65,43 @@ func showTask(args []string, conf lib.GlobalConfig, stdout io.Writer) error {
 	}
 
 	return nil
+}
+
+func getTaskCandidates(bd *lib.Board) ([]*lib.Issue, error) {
+	errorChan := make(chan error)
+	issuesChan := make(chan []*lib.Issue)
+	defer func() {
+		close(errorChan)
+		close(issuesChan)
+	}()
+
+	issues := make([]*lib.Issue, 0)
+	for _, cond := range bd.StateMapping {
+		go func(b *lib.Board, c lib.StateCondDef, ich chan []*lib.Issue, ech chan error) {
+			partialIssues, err := b.Client.QueryIssue(b, c)
+			if err != nil {
+				ech <- err
+			}
+			ech <- nil
+			ich <- partialIssues
+		}(bd, cond.Condition, issuesChan, errorChan)
+	}
+
+	dupCounter := make(map[string]struct{})
+	for i:=0; i<len(bd.StateMapping); i++ {
+		err := <-errorChan
+		if err != nil {
+			return []*lib.Issue{}, err
+		}
+		for _, is := range <-issuesChan {
+			_, existence := dupCounter[is.Id()]
+			if !existence {
+				issues = append(issues, is)
+				dupCounter[is.Id()] = struct{}{}
+			}
+		}
+	}
+	return issues, nil
 }
 
 func getBoardList(endpointDef []lib.EndpointDef, boardDef []lib.BoardDef) ([]*lib.Board, error) {
