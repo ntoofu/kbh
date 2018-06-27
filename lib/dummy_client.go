@@ -2,6 +2,7 @@ package lib
 
 import (
 	"fmt"
+	"sort"
 	"time"
 )
 
@@ -61,7 +62,7 @@ func (c DummyClient) QueryIssue(board *Board, condition StateCondDef) ([]*Issue,
 	foundIssues := make([]*Issue, 0)
 	for _, issue := range DummyClientIssues[board.Name] {
 		if ( (!condition.Asignee.Valid || issue.Asignee == condition.Asignee.Value) &&
-			 (!condition.LabelName.Valid || isInStrSlice(condition.LabelName.Value, issue.Label)) &&
+			 (isIncludedByStrSlice(condition.Labels, issue.Label)) &&
 			 (!condition.IsClosed.Valid || issue.IsClosed == condition.IsClosed.Value)) {
 			foundIssues = append(foundIssues, issue)
 		}
@@ -69,11 +70,16 @@ func (c DummyClient) QueryIssue(board *Board, condition StateCondDef) ([]*Issue,
 	return foundIssues, nil
 }
 
-func isInStrSlice(elem string, slice []string) bool {
-	for _, x := range slice {
-		if x == elem {
-			return true
+func isIncludedByStrSlice(inclusion []string, slice []string) bool {
+	sorted := make(sort.StringSlice, len(slice))
+	copy(sorted, slice)
+	sorted.Sort()
+
+	for _, x := range inclusion {
+		idx := sorted.Search(x)
+		if idx >= len(sorted) || sorted[idx] != x {
+			return false
 		}
 	}
-	return false
+	return true
 }

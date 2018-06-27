@@ -35,17 +35,17 @@ type BoardDef struct {
 
 type StateCondDef struct {
 	Order uint
-	LabelName NullableString `yaml:"label_name"`
+	Labels []string
 	Asignee NullableString
 	IsClosed NullableBool `yaml:"is_closed"`
 	MaxDaysWOUpdate NullableUint `yaml:"max_days_without_update"`
 }
 
 func (x *StateCondDef) IsMatched(issue *Issue) bool {
-	if x.LabelName.Valid {
+	for _, label := range x.Labels {
 		contained := false
 		for _, l := range issue.Label {
-			if x.LabelName.Value == l {
+			if label == l {
 				contained = true
 				break
 			}

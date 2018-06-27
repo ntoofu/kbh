@@ -33,9 +33,7 @@ func (c GitlabClient) ReadIssue(board *Board, issueId string) (*Issue, error) {
 func (c GitlabClient) QueryIssue(board *Board, condition StateCondDef) ([]*Issue, error) {
 	client := c.initClient()
 	var issueOpt gitlab.ListProjectIssuesOptions
-	if condition.LabelName.Valid {
-		issueOpt.Labels = []string{condition.LabelName.Value}
-	}
+	issueOpt.Labels = condition.Labels
 	if condition.Asignee.Valid {
 		// TODO: cache user ID
 		var usersOpt gitlab.ListUsersOptions
