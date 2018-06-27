@@ -1,13 +1,16 @@
 package lib
 
-import "testing"
+import (
+	"github.com/go-test/deep"
+	"testing"
+)
 
 func TestParseConfig(t *testing.T) {
 	expectedConf := GlobalConfig{
 		"my.name",
 		[]EndpointDef{
-			EndpointDef{"repo1", "dummy", "https://foo.bar/baz", "1"},
-			EndpointDef{"repo2", "dummy", "https://hoge.hoge/fuga/fuga", "2"},
+			EndpointDef{"repo1", "dummy", "https://foo.bar/baz", "1", "AAA"},
+			EndpointDef{"repo2", "dummy", "https://hoge.hoge/fuga/fuga", "2", "BBB"},
 		},
 		[]BoardDef{
 			BoardDef{
@@ -18,28 +21,28 @@ func TestParseConfig(t *testing.T) {
 					map[string]StateCondDef{
 						"todo": StateCondDef{
 							3,
-							NullableString{"", false},
+							nil,
 							NullableString{"my.name", true},
 							NullableBool{false, true},
 							NullableUint{0, false},
 						},
 						"doing": StateCondDef{
 							1,
-							NullableString{"doing-label", true},
+							[]string{"doing-label"},
 							NullableString{"my.name", true},
 							NullableBool{false, true},
 							NullableUint{0, false},
 						},
 						"waiting": StateCondDef{
 							2,
-							NullableString{"waiting-label", true},
+							[]string{"waiting-label"},
 							NullableString{"my.name", true},
 							NullableBool{false, true},
 							NullableUint{0, false},
 						},
 						"closed": StateCondDef{
 							4,
-							NullableString{"", false},
+							nil,
 							NullableString{"my.name", true},
 							NullableBool{true, true},
 							NullableUint{14, true},
@@ -55,28 +58,28 @@ func TestParseConfig(t *testing.T) {
 					map[string]StateCondDef{
 						"todo": StateCondDef{
 							3,
-							NullableString{"", false},
+							[]string{"my-name"},
 							NullableString{"my.name", true},
 							NullableBool{false, true},
 							NullableUint{0, false},
 						},
 						"doing": StateCondDef{
 							1,
-							NullableString{"doing-label", true},
+							[]string{"doing-label", "my-name"},
 							NullableString{"my.name", true},
 							NullableBool{false, true},
 							NullableUint{0, false},
 						},
 						"waiting": StateCondDef{
 							2,
-							NullableString{"waiting-label", true},
+							[]string{"waiting-label", "my-name"},
 							NullableString{"my.name", true},
 							NullableBool{false, true},
 							NullableUint{0, false},
 						},
 						"closed": StateCondDef{
 							4,
-							NullableString{"", false},
+							[]string{"my-name"},
 							NullableString{"my.name", true},
 							NullableBool{true, true},
 							NullableUint{14, true},
@@ -92,21 +95,21 @@ func TestParseConfig(t *testing.T) {
 					map[string]StateCondDef{
 						"todo": StateCondDef{
 							2,
-							NullableString{"", false},
+							nil,
 							NullableString{"", false},
 							NullableBool{false, true},
 							NullableUint{0, false},
 						},
 						"now": StateCondDef{
 							1,
-							NullableString{"doing-label", true},
+							[]string{"doing-label"},
 							NullableString{"", false},
 							NullableBool{false, true},
 							NullableUint{3, true},
 						},
 						"fin": StateCondDef{
 							3,
-							NullableString{"", false},
+							nil,
 							NullableString{"", false},
 							NullableBool{true, true},
 							NullableUint{7, true},
@@ -116,13 +119,11 @@ func TestParseConfig(t *testing.T) {
 			},
 		},
 	}
-	parsedConf, err := ParseConfig("config_test.yml")
+	parsedConf, err := ParseConfig("../config_test.yml")
 	if err != nil {
 		t.Errorf("An error has occured during parsing config: %v", err)
 	}
-	if !reflect.DeepEqual(parsedConf, expectedConf) {
-		t.Errorf("config parsed from config_test.yml differs from expected one")
+	if diff := deep.Equal(parsedConf, expectedConf); diff != nil {
+		t.Errorf("config parsed from config_test.yml differs from expected one\n%v", diff)
 	}
 }
-
-

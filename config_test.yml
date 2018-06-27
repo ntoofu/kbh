@@ -4,10 +4,12 @@ endpoint:
     type: dummy
     api_version: 1
     url: "https://foo.bar/baz"
+    auth_token: AAA
   - name: repo2
     type: dummy
     api_version: 2
     url: "https://hoge.hoge/fuga/fuga"
+    auth_token: BBB
 board:
   - name: team1/proj1
     alias:
@@ -20,12 +22,14 @@ board:
           is_closed: false
           order: 3
         doing:
-          label_name: doing-label
+          labels:
+            - doing-label
           asignee: my.name
           is_closed: false
           order: 1
         waiting:
-          label_name: waiting-label
+          labels:
+            - waiting-label
           asignee: my.name
           is_closed: false
           order: 2
@@ -42,20 +46,28 @@ board:
     mapping:
       state:
         todo:
+          labels:
+            - my-name
           asignee: my.name
           is_closed: false
           order: 3
         doing:
-          label_name: doing-label
+          labels:
+            - doing-label
+            - my-name
           asignee: my.name
           is_closed: false
           order: 1
         waiting:
-          label_name: waiting-label
+          labels:
+            - waiting-label
+            - my-name
           asignee: my.name
           is_closed: false
           order: 2
         closed:
+          labels:
+            - my-name
           asignee: my.name
           is_closed: true
           max_days_without_update: 14
@@ -70,7 +82,8 @@ board:
           is_closed: false
           order: 2
         now:
-          label_name: doing-label
+          labels:
+            - doing-label
           is_closed: false
           max_days_without_update: 3
           order: 1
