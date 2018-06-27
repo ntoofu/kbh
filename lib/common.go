@@ -30,6 +30,7 @@ type Issue struct {
 	Label []string
 	IsClosed bool
 	updateTime time.Time
+	Uri string
 }
 
 func (i Issue) Id() string {
@@ -40,12 +41,12 @@ func (i Issue) UpdateTime() time.Time {
 	return i.updateTime
 }
 
-func NewIssue(id string, client KanbanApiClient, title, description, asignee string, label []string, isClosed bool, updateTime time.Time) *Issue {
-	return &Issue {id, client, title, description, asignee, label, isClosed, updateTime}
+func NewIssue(id string, client KanbanApiClient, title, description, asignee string, label []string, isClosed bool, updateTime time.Time, uri string) *Issue {
+	return &Issue {id, client, title, description, asignee, label, isClosed, updateTime, uri}
 }
 
 func NewEmptyIssue() *Issue {
-	return NewIssue("", nil, "", "", "", []string{}, false, time.Unix(0,0))
+	return NewIssue("", nil, "", "", "", []string{}, false, time.Unix(0,0), "")
 }
 
 type KanbanApiClient interface {

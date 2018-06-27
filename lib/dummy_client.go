@@ -23,15 +23,18 @@ func initIssueListIfNecessary (clientId string) {
 
 func (c DummyClient) CreateIssue(board *Board, draft *Issue) (*Issue, error) {
 	initIssueListIfNecessary(board.Name)
+	id := fmt.Sprintf("id%d", DummyClientIssueIdCounter[board.Name])
+	uri := fmt.Sprintf("https://dummy/%s/%s", board.Name, id)
 	issue := NewIssue(
-		fmt.Sprintf("id%d", DummyClientIssueIdCounter[board.Name]),
+		id,
 		c,
 		draft.Title,
 		draft.Description,
 		draft.Asignee,
 		draft.Label,
 		draft.IsClosed,
-		time.Now())
+		time.Now(),
+		uri)
 	DummyClientIssues[board.Name] = append(DummyClientIssues[board.Name], issue)
 	DummyClientIssueIdCounter[board.Name]++
 	return issue, nil

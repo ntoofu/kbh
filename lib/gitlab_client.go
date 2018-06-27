@@ -85,7 +85,8 @@ func (c GitlabClient) QueryIssue(board *Board, condition StateCondDef) ([]*Issue
 			gitlabIssue.Assignee.Name,
 			gitlabIssue.Labels,
 			gitlabIssue.State == "closed",
-			*gitlabIssue.UpdatedAt)
+			*gitlabIssue.UpdatedAt,
+			gitlabIssue.WebURL)
 		issues = append(issues, issue)
 	}
 	return issues, nil
