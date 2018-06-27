@@ -12,22 +12,22 @@ import (
 )
 
 func TestShowOutputWithoutOrder(t *testing.T) {
-	expectedExample := `team1/proj1:id0,title1,todo
-team1/proj1:id1,title2,todo
-team1/proj1:id2,title3,doing
-team1/proj1:id3,title4,waiting
-team1/proj1:id4,title5,closed
-team1/proj2:id0,title1,todo
-team1/proj2:id1,title2,todo
-team1/proj2:id2,title3,doing
-team1/proj2:id3,title4,waiting
-team1/proj2:id4,title5,closed
-individual:id0,title1,todo
-individual:id1,title2,todo
-individual:id2,title3,todo
-individual:id3,title4,todo
-individual:id4,title5,fin
-individual:id6,title7,now
+	expectedExample := `https://dummy/team1/proj1/id0,title1,todo
+https://dummy/team1/proj1/id1,title2,todo
+https://dummy/team1/proj1/id2,title3,doing
+https://dummy/team1/proj1/id3,title4,waiting
+https://dummy/team1/proj1/id4,title5,closed
+https://dummy/team1/proj2/id0,title1,todo
+https://dummy/team1/proj2/id1,title2,todo
+https://dummy/team1/proj2/id2,title3,doing
+https://dummy/team1/proj2/id3,title4,waiting
+https://dummy/team1/proj2/id4,title5,closed
+https://dummy/individual/id0,title1,todo
+https://dummy/individual/id1,title2,todo
+https://dummy/individual/id2,title3,todo
+https://dummy/individual/id3,title4,todo
+https://dummy/individual/id4,title5,fin
+https://dummy/individual/id6,title7,now
 `
 	expectedLines := strings.Split(expectedExample, "\n")
 	sort.Strings(expectedLines)

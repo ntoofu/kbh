@@ -8,6 +8,7 @@ type Task struct {
 	Title string
 	Description string
 	State string
+	Uri string
 }
 
 type Board struct {

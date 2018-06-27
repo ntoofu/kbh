@@ -61,7 +61,7 @@ func showTask(args []string, conf lib.GlobalConfig, stdout io.Writer) error {
 	}
 
 	for _, task := range taskList {
-		fmt.Fprintf(stdout, "%s:%s,%s,%s\n", task.Board.Name, task.IssueId, task.Title, task.State)
+		fmt.Fprintf(stdout, "%s,%s,%s\n", task.Uri, task.Title, task.State)
 	}
 
 	return nil
@@ -147,5 +147,5 @@ func issueToTask(bd *lib.Board, issue *lib.Issue) (*lib.Task, bool) {
 	if state == "" {
 		return nil, false
 	}
-	return &lib.Task{bd, issue.Id(), issue.Title, issue.Description, state}, true
+	return &lib.Task{bd, issue.Id(), issue.Title, issue.Description, state, issue.Uri}, true
 }
