@@ -18,6 +18,5 @@ func createTask(c *cli.Context) error {
 	}
 
 	// TODO
-
-	return nil
+	return fmt.Errorf("Sorry, not implemented yet ...")
 }
