@@ -1,0 +1,101 @@
+user: my.name
+endpoint:
+  - name: repo1
+    type: dummy
+    api_version: 1
+    url: "https://foo.bar/baz"
+    auth_token: AAA
+  - name: repo2
+    type: dummy
+    api_version: 2
+    url: "https://hoge.hoge/fuga/fuga"
+    auth_token: BBB
+board:
+  - name: team1/proj1
+    alias:
+      - proj1
+    endpoint: repo1
+    mapping:
+      state:
+        todo:
+          asignee: my.name
+          is_closed: false
+          order: 3
+        doing:
+          labels:
+            - doing-label
+          asignee: my.name
+          is_closed: false
+          order: 1
+        waiting:
+          labels:
+            - waiting-label
+          asignee: my.name
+          is_closed: false
+          order: 2
+        closed:
+          asignee: my.name
+          is_closed: true
+          max_days_without_update: 14
+          order: 4
+  - name: team1/proj2
+    alias:
+      - proj2
+      - proj02
+    endpoint: repo1
+    mapping:
+      state:
+        todo:
+          labels:
+            - my-name
+          asignee: my.name
+          is_closed: false
+          order: 3
+        doing:
+          labels:
+            - doing-label
+            - my-name
+          asignee: my.name
+          is_closed: false
+          order: 1
+        waiting:
+          labels:
+            - waiting-label
+            - my-name
+          asignee: my.name
+          is_closed: false
+          order: 2
+        closed:
+          labels:
+            - my-name
+          asignee: my.name
+          is_closed: true
+          max_days_without_update: 14
+          order: 4
+  - name: individual
+    alias:
+      - mytask
+    endpoint: repo2
+    mapping:
+      state:
+        todo:
+          is_closed: false
+          order: 2
+        now:
+          labels:
+            - doing-label
+          is_closed: false
+          max_days_without_update: 3
+          order: 1
+        fin:
+          is_closed: true
+          max_days_without_update: 7
+          order: 3
+command:
+  show:
+    delimiter: "	"
+    replacer: " "
+    field:
+      - uri
+      - title
+      - state
