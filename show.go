@@ -49,7 +49,7 @@ func showTask(args []string, conf lib.GlobalConfig, stdout io.Writer) error {
 	}
 
 	taskList := make([]*lib.Task, 0)
-	for i := len(boardList); i>0; {
+	for i := len(boardList); i > 0; {
 		select {
 		case err := <-errorChan:
 			i--
@@ -66,7 +66,7 @@ func showTask(args []string, conf lib.GlobalConfig, stdout io.Writer) error {
 		fieldStr := map[string]string{
 			"state": task.State,
 			"title": task.Title,
-			"uri": task.Uri,
+			"uri":   task.Uri,
 		}
 		for i, field := range showOpts.Field {
 			if i != 0 {
@@ -102,7 +102,7 @@ func getTaskCandidates(bd *lib.Board) ([]*lib.Issue, error) {
 	}
 
 	dupCounter := make(map[string]struct{})
-	for i:=0; i<len(bd.StateMapping); i++ {
+	for i := 0; i < len(bd.StateMapping); i++ {
 		err := <-errorChan
 		if err != nil {
 			return []*lib.Issue{}, err

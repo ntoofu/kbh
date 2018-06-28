@@ -12,7 +12,7 @@ var DummyClientIssueIdCounter map[string]uint
 type DummyClient struct {
 }
 
-func initIssueListIfNecessary (clientId string) {
+func initIssueListIfNecessary(clientId string) {
 	if _, good := DummyClientIssueIdCounter[clientId]; !good {
 		DummyClientIssues[clientId] = []*Issue{}
 	}
@@ -64,9 +64,9 @@ func (c DummyClient) ReadIssue(board *Board, issueId string) (*Issue, error) {
 func (c DummyClient) QueryIssue(board *Board, condition StateCondDef) ([]*Issue, error) {
 	foundIssues := make([]*Issue, 0)
 	for _, issue := range DummyClientIssues[board.Name] {
-		if ( (!condition.Asignee.Valid || issue.Asignee == condition.Asignee.Value) &&
-			 (isIncludedByStrSlice(condition.Labels, issue.Label)) &&
-			 (!condition.IsClosed.Valid || issue.IsClosed == condition.IsClosed.Value)) {
+		if (!condition.Asignee.Valid || issue.Asignee == condition.Asignee.Value) &&
+			(isIncludedByStrSlice(condition.Labels, issue.Label)) &&
+			(!condition.IsClosed.Valid || issue.IsClosed == condition.IsClosed.Value) {
 			foundIssues = append(foundIssues, issue)
 		}
 	}

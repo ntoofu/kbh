@@ -4,8 +4,8 @@ import "testing"
 
 func TestIsIncludedByStrSlice(t *testing.T) {
 	type argsAndExpect struct {
-		arg1 []string
-		arg2 []string
+		arg1     []string
+		arg2     []string
 		expected bool
 	}
 

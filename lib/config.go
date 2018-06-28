@@ -11,25 +11,25 @@ import (
 )
 
 type GlobalConfig struct {
-	User string
+	User     string
 	Endpoint []EndpointDef
-	Board []BoardDef
-	Command CommandOptions
+	Board    []BoardDef
+	Command  CommandOptions
 }
 
 type EndpointDef struct {
-	Name string
-	Type string
-	Url string
+	Name       string
+	Type       string
+	Url        string
 	ApiVersion string `yaml:"api_version"`
-	AuthToken string `yaml:"auth_token"`
+	AuthToken  string `yaml:"auth_token"`
 }
 
 type BoardDef struct {
-	Name string
-	Alias []string
+	Name     string
+	Alias    []string
 	Endpoint string
-	Mapping struct {
+	Mapping  struct {
 		State map[string]StateCondDef
 	}
 }
@@ -39,17 +39,17 @@ type CommandOptions struct {
 }
 
 type StateCondDef struct {
-	Order uint
-	Labels []string
-	Asignee NullableString
-	IsClosed NullableBool `yaml:"is_closed"`
+	Order           uint
+	Labels          []string
+	Asignee         NullableString
+	IsClosed        NullableBool `yaml:"is_closed"`
 	MaxDaysWOUpdate NullableUint `yaml:"max_days_without_update"`
 }
 
 type ShowOptions struct {
 	Delimiter string
-	Replacer string
-	Field []string
+	Replacer  string
+	Field     []string
 }
 
 func (x *StateCondDef) IsMatched(issue *Issue) bool {

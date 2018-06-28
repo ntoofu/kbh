@@ -8,7 +8,7 @@ import (
 )
 
 type GitlabClient struct {
-	Url string
+	Url       string
 	AuthToken string
 }
 
