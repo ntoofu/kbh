@@ -91,3 +91,11 @@ board:
           is_closed: true
           max_days_without_update: 7
           order: 3
+command:
+  show:
+    delimiter: "	"
+    replacer: " "
+    field:
+      - uri
+      - title
+      - state

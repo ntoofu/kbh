@@ -14,6 +14,7 @@ type GlobalConfig struct {
 	User string
 	Endpoint []EndpointDef
 	Board []BoardDef
+	Command CommandOptions
 }
 
 type EndpointDef struct {
@@ -33,12 +34,22 @@ type BoardDef struct {
 	}
 }
 
+type CommandOptions struct {
+	Show ShowOptions
+}
+
 type StateCondDef struct {
 	Order uint
 	Labels []string
 	Asignee NullableString
 	IsClosed NullableBool `yaml:"is_closed"`
 	MaxDaysWOUpdate NullableUint `yaml:"max_days_without_update"`
+}
+
+type ShowOptions struct {
+	Delimiter string
+	Replacer string
+	Field []string
 }
 
 func (x *StateCondDef) IsMatched(issue *Issue) bool {

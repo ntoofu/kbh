@@ -118,6 +118,13 @@ func TestParseConfig(t *testing.T) {
 				},
 			},
 		},
+		CommandOptions{
+			ShowOptions{
+				"	",
+				" ",
+				[]string{"uri", "title", "state"},
+			},
+		},
 	}
 	parsedConf, err := ParseConfig("../config_test.yml")
 	if err != nil {

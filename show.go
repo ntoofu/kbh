@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"io"
 	"sort"
+	"strings"
 
 	"github.com/ntoofu/kbh/lib"
 	"github.com/urfave/cli"
@@ -60,8 +61,21 @@ func showTask(args []string, conf lib.GlobalConfig, stdout io.Writer) error {
 		}
 	}
 
+	showOpts := conf.Command.Show
 	for _, task := range taskList {
-		fmt.Fprintf(stdout, "%s,%s,%s\n", task.Uri, task.Title, task.State)
+		fieldStr := map[string]string{
+			"state": task.State,
+			"title": task.Title,
+			"uri": task.Uri,
+		}
+		for i, field := range showOpts.Field {
+			if i != 0 {
+				fmt.Fprintf(stdout, "%s", showOpts.Delimiter)
+			}
+			replacedStr := strings.Replace(fieldStr[field], showOpts.Delimiter, showOpts.Replacer, -1)
+			fmt.Fprintf(stdout, "%s", replacedStr)
+		}
+		fmt.Fprintf(stdout, "\n")
 	}
 
 	return nil
